@@ -1795,9 +1795,33 @@ this.$bus.$emit("xxxx", data);
 ### Vue 封装的过渡与动画
 
 1. 在插入、更新或移除 DOM 元素时，在合适的时候给元素添加样式类名。
+
 2. 准备样式：
-   - v-enter：进入的起点
-   - v-enter-active：进入过程中
-   - v-enter-to：进入的终点
+
+   - 进入
+     - v-enter：进入的起点
+     - v-enter-active：进入过程中
+     - v-enter-to：进入的终点
+   - 离开
+     - v-leave：离开的起点
+     - v-leave-active：离开过程中
+     - v-leave-to：离开的终点
+
+3. 使用 `<transition>` 包裹要过渡的元素，并配置 name 属性：
+
+   - ```vue
+     <transition name="hello">
+       	<div v-show="isShow"></div>
+     </transition>
+     ```
+
+   - 更改了 name 属性后，需要将 css 的 v- 改成 name-
+
+4. 若有多个元素需要过渡动画，则要将 `transition` 改为 `transition-group`，并且每一项都要配置 key
 
 ![image-20220501124849108](C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220501124849108.png)
+
+使用 animation 只需用到 v-enter-acttive:
+
+<img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220501125229888.png" alt="image-20220501125229888" style="zoom:80%;" />
+
