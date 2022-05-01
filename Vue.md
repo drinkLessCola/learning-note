@@ -1733,3 +1733,71 @@ export default {
 <ChildComponent @click.native="func"></ChildComponent>
 ```
 
+### 全局事件总线
+
+全局事件总线需要满足两个条件：
+
+- 能够被所有组件访问到
+  - 应该在组件原型上
+- 能够使用 `$emit` `$on` `$off`
+  - 那么必须是 vm / vc
+
+因此全局事件总线必须在 Vue 的原型上。（vc 的原型的原型为 Vue 的原型）
+
+可以使用 Vue 实例 vm 来作为事件总线。
+
+#### 创建全局总线
+
+```vue
+<script>
+new Vue({
+	beforeCreate(){
+		Vue.prototype.$bus = this
+	}
+})
+</script>
+```
+
+#### 使用事件总线
+
+##### 接收数据
+
+```vue
+<script>
+export default { 
+	methods(){
+		func(data){
+			....
+		}
+	},
+	mounted(){
+		this.$bus.$on("xxxx", this.func)
+	}
+  beforeDestroy(){
+    this.$bus.$off("xxxx")
+  }
+}
+</script>
+```
+
+##### 提供数据
+
+```js
+this.$bus.$emit("xxxx", data);
+```
+
+### nextTick
+
+1. `this.$nextTick(callback)`
+2. 在下一次 DOM 更新结束后执行其指定的回调
+3. 当改变事件后想要基于更新后的 DOM 元素进行某些操作时，要在 nextTick 所指定的回调函数中执行
+
+### Vue 封装的过渡与动画
+
+1. 在插入、更新或移除 DOM 元素时，在合适的时候给元素添加样式类名。
+2. 准备样式：
+   - v-enter：进入的起点
+   - v-enter-active：进入过程中
+   - v-enter-to：进入的终点
+
+![image-20220501124849108](C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220501124849108.png)
