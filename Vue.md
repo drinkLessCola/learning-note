@@ -1825,3 +1825,55 @@ this.$bus.$emit("xxxx", data);
 
 <img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220501125229888.png" alt="image-20220501125229888" style="zoom:80%;" />
 
+### Vue 脚手架 配置代理
+
+#### 简单配置
+
+在 vue.confing.js 中添加如下配置：
+
+```js
+devServer:{
+	proxy:"http://localhost:5000"
+}
+```
+
+1. 优点：配置简单，请求资源时直接发给前端即可。
+2. 缺点：
+   - 不能配置多个代理，devServer 中不能有多个 proxy 项
+   - 不能灵活控制请求是否走代理
+     - 在本地端口中如果找到了该资源，则直接返回，不会走代理（优先匹配前端资源）
+     - 只有请求了前端不存在的资源，才会将请求转发给服务器。
+
+#### 具体配置
+
+```js
+module.exports = {
+	devServer: {
+		proxy:{
+			//匹配所有以 'api1' 开头的请求路径
+			'/api1':{
+        // 代理目标的基础路径
+				target:'http://localhost:5000'
+        // 更改请求头中的 host 与请求服务器一致
+        // 默认为 true
+        changeOrigin:true
+        // 重写路径
+        pathRewrite:{
+        	'^/api1':''
+      	}
+			},
+    	//匹配所有以 'api2' 开头的请求路径
+			'/api1':{
+			 target:'http://localhost:5001'
+        changeOrigin:true
+        pathRewrite:{
+        	'^/api2':''
+      	}
+			}
+		}
+	}
+}
+```
+
+1. 优点：可以配置多个代理，且可以灵活的控制请求是否走代理
+2. 缺点：配置略微繁琐，请求资源时必须加前缀

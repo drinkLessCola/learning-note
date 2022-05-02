@@ -175,8 +175,7 @@
      - 若参数为空或是 undefined，使用默认的逗号分隔符
      - 使用提供的参数作为分隔符
      - 会对数组元素调用 toString 方法
-
-- 数组中的元素若为 null / undefined，则在上述方法中都会变成 空字符串
+   - 数组中的元素若为 null / undefined，则在上述方法中都会变成 空字符串
 
 ### 栈方法（原地修改）
 
@@ -246,4 +245,253 @@
      - 删除的元素个数
      - 在删除位置插入的新元素
    - 返回删除的元素，没有则返回空数组
+
+### 搜索和位置方法
+
+1. **严格相等**
+
+   - 内部使用全等 === 进行比较
+   - includes 是 ES7 新增的方法
+   - 都接收两个参数
+     - 查找的元素
+     - 起始搜索位置，可以为负值
+
+   |             | 查找方向 | 返回值                             |
+   | ----------- | -------- | ---------------------------------- |
+   | indexOf     | 从前向后 | 第一个匹配的元素索引，没有找到为-1 |
+   | lastIndexOf | 从后向前 | 第一个匹配的元素索引，没有找到为-1 |
+   | includes    | 从前向后 | 元素是否包含的布尔值               |
+
+2. **断言函数**
+
+   - 对数组的每个元素都会调用断言函数，根据返回值判定是否匹配
+
+   - 接收两个参数
+     - 断言函数  `(item, index, array) => {return Boolean}`
+     - 指定断言函数的 this 值
+   - 找到匹配项后不再继续搜索
+
+### 迭代方法
+
+- 参数
+  - 以每一个数组元素为参数运行的函数
+  - 指定函数的 this 值
+- every
+  - 数组每一项执行函数都返回 true，方法才返回 true
+- some
+  - 数组只要有一项执行函数返回 true，方法返回 true
+- filter
+  - 函数返回 true 的项组成新数组后返回
+- forEach
+  - 无返回值
+- map
+  - 返回 函数调用的返回值 组成的新数组
+
+### 归并方法
+
+- `reduce(func, initValue)`
+  - 从数组第一项开始遍历
+- `reduceRight(func, initValue)`
+  - 从数组最后一项开始遍历
+- func 接收四个参数
+  - 前一次归并的返回值
+  - 当前数组元素
+  - 当前索引
+  - 数组本身
+- 若**未指定归并初始值**，则初始值为**数组第一个元素**，遍历从第二个元素开始。
+
+## Map
+
+- 允许使用任何数据类型的键和值。
+
+### Map 使用的比较算法 SameValueZero
+
+- 与全等（===）基本一致
+- 唯一不同在于 NaN 与 NaN 相同
+  - 因此可以使用 NaN 作为键
+
+### 初始化
+
+- new Map()
+- 可以传入一个可迭代的 包含键值对数组 的对象作为初始值。
+
+### 方法
+
+- `set(key, newVal)`
+  - 返回映射实例的引用
+  - 可以连缀多个操作
+- `get(key)` 
+  - 根据键获取值
+  - 不存在返回 `undefined`
+- `delete(key)`   删除键值对
+- `clear()`  清除整个映射
+- `has(key)` 返回布尔值，表示映射中是否有键
+- `size()` 返回映射中键值对的个数
+
+### 顺序
+
+维护了插入键值对的属性
+
+### 迭代
+
+1. **迭代器方法**
+   - `map.keys()`  返回映射中键的迭代器
+   - `map.values()` 返回映射中值的迭代器
+   - `map.entries()`返回映射中键值对数组的迭代器
+   - `map[Symbol.iterator]` 引用了 `map.entries()``
+     - ``map === map[Symbol.iterator]`
+     - 可以对映射实例进行拓展操作 `…map``
+     - ``new Map(…map)`
+2. **回调函数**
+   - `forEach(callback[, thisArg])`
+
+## WeakMap
+
+- 键的类型只允许为 **对象**，而值可以是任意类型
+  - 保证了只有通过**实例的引用**才能取值
+  - 原始值将无法区分 设置时使用的键 和 之后的一个相同的原始值
+  - 原始值可以先包装为对象 new String(str)
+
+### 初始化
+
+- new WeakMap()
+- 可以传入一个可迭代的 包含键值对数组 的对象作为初始值。
+- 如果有一个初始值的键不符合要求，将会导致整个初始化失败。
+
+### API
+
+- `set(key, newVal)`
+  - 返回映射实例的引用
+  - 可以连缀多个操作
+- `get(key)` 
+  - 根据键获取值
+  - 不存在返回 `undefined`
+- `delete(key)`   删除键值对
+- `has(key)` 返回布尔值，表示映射中是否有键
+
+### 弱键
+
+- 映射对键的引用不是正式引用，不会阻止垃圾回收
+- 但弱键对值的引用属于正式引用
+
+### 不可迭代
+
+- WeakMap 实例中的键值对随时可能会被回收
+
+### 应用
+
+- 闭包 + WeakMap 实现私有属性
+
+  - ```js
+    const Demo = ((){
+    	const wm = new WeakMap();
+    	
+    	class Demo{
+    		constructor(id){
+    			this.idProperty = Symbol('id');
+    			this.setId(id);
+    		}
+    		
+    		setPrivate(property, value){
+    			const privateData = wm.get(this) || {};
+    			privateData[property] = value;
+    			wm.set(this, privateData);
+    		}
+    		getPrivate(property){
+    			return wm.get(this)[property]
+    		}
+    		setId(id){
+    			this.setPrivate(this.idProperty, id)
+    		}
+    		getId(){
+    			return this.getPrivate(this.idProperty);
+    		}
+    	}
+    
+    	return Demo;
+    })()
+    ```
+
+    
+
+- DOM 节点关联源数据
+
+## Map 与 Object 的比较
+
+- 都是存储键值对
+
+### 键
+
+- Map 允许任何数据类型作为键
+- Object 只允许 字符串类型 和 Symbol
+  - 字面量中可以定义其他类型，但会被强制转换。
+  - 对象会变成 “[object Object]”
+
+### 遍历顺序
+
+- Map 维护了键值对的插入顺序
+  - 可以使用 **迭代器方法** 和 **回调函数** 遍历
+- Object 
+  - 使用 **for..in** 遍历
+  - 默认未实现 [Symbol.iterator ] 方法，不能迭代
+  - 
+  - 内部方法 OwnPropertyKey 的规定顺序遍历
+    1. 遍历所有的整数属性（按升序）
+    2. 遍历所有的字符串属性（按插入顺序）
+    3. 遍历所有的符号属性（按插入顺序）
+
+### 内存占用
+
+**Map** 较 Object **内存占用更少**
+
+> 相同的内存空间，Map 大约可以比 Object 多存储 50% 的键值对
+
+### 插入速度
+
+- 插入速度不会随着键值对的数量而线性增加。
+- 如果涉及大量的插入操作，**Map 的性能更佳**
+
+### 查找速度
+
+- 差距不大
+- 如果涉及大量的查找操作，**Object** 的性能更佳
+  - 因为如果 Object 中有较多**整数属性**时，浏览器会进行优化，在内存中使用更高效的布局。
+
+### 删除性能
+
+- Object 的 delete 性能十分拉跨
+- Map 的 `delete()` 性能比 插入 和 查找 更好
+- 如果涉及大量的删除操作，请不要犹豫，使用 **Map**!
+
+## Set
+
+### 初始化
+
+- `new Set()`
+- 可以传入一个可迭代对象作为初始值
+
+### 内部使用的比较算法 SameValueZero
+
+### API
+
+- `add(value)`
+  - 返回集合实例的引用
+  - 可以连缀多个操作
+- `delete(value)`   删除值，返回值表示集合中是否有要删除的值
+- `has(value)` 返回布尔值，表示集合中是否有值
+- `clear()` 清空集合
+- `size` 返回集合中值的数量
+
+### 顺序与迭代
+
+- 迭代器方法（按插入顺序生成迭代器）
+  - keys() / values() 返回值的迭代器
+  - entries() 返回包含两个值元素的数组 [value, value]
+  - [Symbol.iterator] 引用 `values()`
+    - 可以对集合使用扩展操作 new Set(…set)
+- 回调方法
+  - `forEach((val, dupVal) => {} [, thisArg])`
+  - callback 方法两个参数都是 Set 实例迭代的值
+
+
 
