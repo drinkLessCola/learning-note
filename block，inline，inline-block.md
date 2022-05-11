@@ -28,9 +28,9 @@
 
 ​			inline 元素的宽度是根据它所包含的内容而定的。
 
-​			**width 和 height 的设定对于 inline 元素而言是无效的**。
+​			==**width 和 height 的设定对于 inline 元素而言是无效的**。==
 
-​			inline 元素在水平方向的 padding / margin 可以应用，在垂直方向的不会生效。
+​			**inline 元素在水平方向的 padding / margin 可以应用，在垂直方向的不会生效。**
 
 常见默认为 inline 的 HTML 标签有：\<span> \<a> \<strong> \<em>等。
 
@@ -112,6 +112,20 @@ div{
 
 **display:grid** 运用 Grid 排版。
 
+
+
+## Margin 塌陷
+
+- 两个元素的 margin 相互接触时，会发生 margin 塌陷的现象，两个 margin 会被合并为一个。
+- 两个 margin 都为正数：取最大的 margin 为合并后的 margin
+- 两个 margin 都为负数：取绝对值最大的 margin 为合并后的 margin
+- 一正一负：合并后的 margin = 两个 margin 之和
+
 <img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220111233715879.png" alt="image-20220111233715879" style="zoom:80%;" />
 
-<img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220111234126521.png" alt="image-20220111234126521" style="zoom:50%;" />
+## padding
+
+- padding 不能有负值，只能为 0 或 正数
+- background 会被应用到 padding 区域。但可以通过 background-clip 来改变这个默认行为。
+
+<img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220111234126521.png" alt="image-20220111234126521" style="zoom: 80%;" />

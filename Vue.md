@@ -1877,3 +1877,93 @@ module.exports = {
 
 1. 优点：可以配置多个代理，且可以灵活的控制请求是否走代理
 2. 缺点：配置略微繁琐，请求资源时必须加前缀
+
+### 插槽
+
+- 父组件可以向子组件指定位置插入 html 结构，也是一种组件间通信的方式。
+
+#### 默认插槽
+
+- 可以在`<slot></slot>` 中定义默认值，如果没有结构使用插槽，就会显示默认值
+- 如果定义多个插槽，且不具名，将会导致每个插槽都会被放入父组件传来的结构
+
+```vue
+// 父组件
+<Comp>
+	<div> 一些自定义结构</div>
+</Comp>
+// 子组件
+<template>
+	<div>
+    <slot>插槽的默认值</slot>
+  </div>
+</template>
+```
+
+#### 具名插槽
+
+- 给插槽取名：`<slot name="dsd"></slot>`
+- 放入具名插槽：`<template slot="center"></template>`
+  - template 标签可以使用 `v-slot:footer` 来应用插槽
+
+```vue
+// 父组件
+<Comp>
+  <template slot="center">
+		<div>一些自定义结构</div>
+  </template>
+  <template v-slot:footer>
+  	<div>
+    
+    </div>
+  </template>
+</Comp>
+// 子组件
+<template>
+	<div>
+    <slot name="center">插槽的默认值</slot>
+    <slot name="footer">插槽的默认值</slot>
+  </div>
+</template>
+```
+
+
+
+#### 作用域插槽
+
+- 数据存放在插槽组件中
+- 根据数据生成的结构由插槽的使用者决定
+- 传送数据给使用者：`<slot :data="d">`
+- 使用数据：`<template scope="otherNameIsOk">`
+
+```vue
+// 父组件
+<Comp>
+  <template scope="scopeData">
+		<div v-for="g in scopeDate.data" :key=".."></div>
+  </template>
+  <template scope="{data}">
+  	<div>
+    	<!--可以使用对象解构赋值的方式-->
+    </div>
+  </template>
+</Comp>
+// 子组件
+<template>
+	<div>
+    <slot :data="data">插槽的默认值</slot>
+  </div>
+</template>
+<script>
+	export dafault {
+    name:'',
+    props:[],
+    data(){
+        return {
+          data:[]
+        }
+    }
+  }
+</script>
+```
+
