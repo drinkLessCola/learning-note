@@ -259,7 +259,7 @@ promise.then(alert);
 
 它只是一个简写形式。
 
-#### finally
+#### finally [ES2018]
 
 .finally(f)调用  与 .then(f,f)类似。从某种意义上，f总是在promise被settled时运行。
 
@@ -273,6 +273,16 @@ new Promise((resolve,reject) =>{
 .finally(() => stop loading indicator)
 //加载指示器 始终在我们处理结果/错误之前停止
 .then(result => show result, err => show error)
+```
+
+```js
+Promise.prototype.finally = function (callback) {
+  let P = this.constructor;
+  return this.then(
+    value  => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => { throw reason })
+  );
+};
 ```
 
 finally(f) 并不完全等同于 then(f,f)。
@@ -539,6 +549,10 @@ new Promise((resolve,reject) => {
 
 最后的.catch会捕获所有的Error，不仅是**显式的rejection**，还有**处理程序中意外出现的error**，比如编程错误。
 
+> catch 也可以捕获 then() 回调函数中的错误
+
+使用 catch 比 在上一个 then 中定义 rejected 的回调函数要好，因为 catch 还可以捕获 then 回调函数中发生的错误。
+
 ### 再次抛出 Rethrowing
 
 如果在.catch中throw，那么控制权就会被移交给下一个最近的error处理程序。
@@ -576,6 +590,8 @@ new Promise((resolve,reject) => {
 ### 未处理的 rejection
 
 如果出现error，promise的状态将变为“rejected”，然后执行会跳转到最近的rejection处理程序，如果没有处理程序，那么error会卡住。
+
+> 没有使用 catch 方法指定回调函数，Promise 对象抛出的错误不会传递到外层代码。
 
 当发生一个常规错误并且未被try..catch捕获时，**脚本会死掉**，并在控制台留下错误信息。
 
@@ -800,6 +816,8 @@ Promise.all([
 ]).then(alert);// 1, 2, 3
 ```
 
+如果作为参数的 Promise 实例，自己定义了 catch 方法，那么它一旦被 rejected，并不会触发 Promise.all() 的 catch 方法，而是在自己的 catch 方法中处理，如果将错误处理完了，返回了一个 promise 实例，那么这个 promise 实例将作为 Promise.all() 中 resolved 的实例。
+
 ### Promise.allSettled
 
 如果任意的promise reject，则Promise.all整个将会reject。
@@ -886,6 +904,32 @@ Promise.race([
 
 第一个settled的promise赢得了比赛之后，所有进一步的result / error 都会被忽略。
 
+### Promise.any
+
+ES 2021 新引入的方法。接收一组 Promise 实例作为参数，包装成一个新的 Promise 实例返回。
+
+只要参数实例有一个变成了 fulfilled 状态，包装实例就会变成 fullfilled 状态；
+
+如果所有的参数实例都变成 rejected 状态，包装实例就会变成 rejected 状态。
+
+抛出的错误为 **AggregateError 实例**。
+
+相当于一个数组，每个成员对应一个被 rejected 的操作所抛出的错误。
+
+```js
+var resolved = Promise.resolve(42);
+var rejected = Promise.reject(-1);
+var alsoRejected = Promise.reject(Infinity);
+
+Promise.any([resolved, rejected, alsoRejected]).then(function (result) {
+  console.log(result); // 42
+});
+
+Promise.any([rejected, alsoRejected]).catch(function (results) {
+  console.log(results); // [-1, Infinity]
+});
+```
+
 ### Promise.resolve/reject
 
 #### Promise.resolve
@@ -899,6 +943,14 @@ let promise = new Promise(resolve => resolve(value));
 当一个函数被期望返回一个promise时，这个方法用于兼容性。
 
 **将value封装进一个promise，以满足返回一个promise的这个需求。**
+
+- 参数是一个 Promise 实例
+  - 不作任何修改，直接原封不动地返回这个实例
+- 参数是一个 Thenable 对象
+  - 会将这个对象转化为一个 Promise 对象
+  - 然后立即执行 thenable 对象的  then 方法。
+- 参数不是具有 then 方法的对象 / 不是对象
+  - 返回一个新的 Promise 对象，状态为 resolved。
 
 例：loadCached函数获取一个URL并记住其内容，以便将来对使用相同URL的调用，
 
