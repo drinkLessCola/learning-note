@@ -302,8 +302,6 @@ alert(Array.from(document.body.childNodes).filter);//function
 
 ##### 不要使用 for..in 来遍历集合
 
-**for..in 循环遍历的是==所有可枚举的（enumerable）属性==。**
-
 集合中还有一些“额外的”很少被用到的属性，这些属性也是我们不期望得到的。
 
 并且节点将会显示为0,1，…
