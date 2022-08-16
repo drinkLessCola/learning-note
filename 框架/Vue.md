@@ -1152,7 +1152,7 @@ new Vue({
 
 ##### setState()
 
-组件内部 this.setState()  触发。
+组件内部 this.setState() 触发。
 
 1. shouldComponentUpdate
    - 返回值为 true / false
