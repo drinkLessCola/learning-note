@@ -39,3 +39,68 @@
 }
 ```
 
+
+
+## 自定义导航栏
+
+注意增加一个填充块，填充 fixed 导致的空缺，
+
+为避免页面滚动时， 填充块跟着滑动，position 要设置为 sticky。
+
+## 自定义 tabbar
+
+https://blog.csdn.net/protreshel/article/details/118389009
+
+https://developers.weixin.qq.com/miniprogram/dev/framework/ability/custom-tabbar.html
+
+## 无法重新声明块范围变量。此处也声明了 xx
+
+<img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220818115952448.png" alt="image-20220818115952448" style="zoom:80%;" />
+
+https://www.cnblogs.com/awench/p/16224033.html
+
+https://developers.weixin.qq.com/community/develop/doc/00082a6fc70e58c94bf936f035b400
+
+页面结尾加上 export {}
+
+
+
+## 微信小程序button默认样式修改
+
+https://www.jianshu.com/p/6c034483bdf2
+
+
+
+## bindtap 方法传参
+
+https://blog.csdn.net/m0_46526358/article/details/113995010
+
+
+
+## switchTab 需要加一杠在前面
+
+![image-20220818162645180](C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220818162645180.png)
+
+### CSS 去除预设的属性值
+
+微信小程序中的 `textarea` 有默认的宽度，可通过 `width:unset` 去除。
+
+### this 类型的问题
+
+
+
+ [TypeScript "this" 隐式具有类型 "any",因为它没有类型注释 'this' implicitly has type 'any' because it does not have a type annotation ](https://www.cnblogs.com/ltfxy/p/16395205.html)
+
+
+
+- wx.switchTab({ url:"/pages/taskCenter/taskCenter"})
+- wx.navigateTo()
+- wx.redirectTo()
+
+## tab 页之间带参跳转
+
+https://blog.csdn.net/weixin_42220039/article/details/109338513
+
+## 退出登录
+
+https://blog.csdn.net/m0_68842055/article/details/125211966

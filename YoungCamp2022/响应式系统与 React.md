@@ -76,7 +76,7 @@
 
 ### 生命周期
 
-
+<img src="C:\Users\Zirina\AppData\Roaming\Typora\typora-user-images\image-20220818104823516.png" alt="image-20220818104823516" style="zoom:80%;" />
 
 ## React (hooks) 的写法
 
